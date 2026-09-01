@@ -1,0 +1,7 @@
+contrast,metric,strongest_pair,t,p_fwer_raw,p_holm,sig_holm_05
+cue_main,dwpli,gamma_low FC1-CP2,2.58853586677602,0.6272,1,0
+cue_main,plv,gamma_low FCz-P1,2.23088018130464,0.6548,1,0
+valid_main,dwpli,gamma_high Fz-CP1,2.98873647569422,0.3566,1,0
+valid_main,plv,gamma_high FCz-Pz,-3.715243656778,0.0512,0.3072,0
+interaction,dwpli,gamma_high F2-P1,2.42502720370864,0.8008,1,0
+interaction,plv,gamma_high F4-CP1,1.96099565722418,0.9804,1,0
