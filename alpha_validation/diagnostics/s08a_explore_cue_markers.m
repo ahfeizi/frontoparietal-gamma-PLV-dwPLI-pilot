@@ -45,8 +45,8 @@ clear; clc;
 
 %% ---- CONFIG ----
 cfg_local          = [];
-cfg_local.raw_root = 'D:\DataSets\Social Memory Cuing Dataset';
-cfg_local.out_root = 'D:\DataSets\Social Memory Cuing Dataset\derivatives\marker_exploration';
+cfg_local.raw_root = fullfile('..','data','ds003702');
+cfg_local.out_root = fullfile('..','derivatives','marker_exploration');
 cfg_local.subjects  = get_valid_subject_list(cfg_local.raw_root); % excludes 08/42/47 automatically
 
 if ~exist(cfg_local.out_root, 'dir'); mkdir(cfg_local.out_root); end
