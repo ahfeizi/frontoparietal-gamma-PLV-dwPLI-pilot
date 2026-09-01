@@ -25,15 +25,15 @@ function cfg = config()
 %             -> s03_connectivity -> s04_stats -> s05_figures
 
 % ---------------- PATHS (Windows -- EDIT to your machine) ----------------
-cfg.bids_dir    = fullfile('D:\DataSets\Social Memory Cuing Dataset\');
-cfg.deriv_dir   = fullfile('D:\DataSets\Social Memory Cuing Dataset\','derivatives','fpg');  % OUR derivatives (fpg = FrontoParietal Gamma)
+cfg.bids_dir    = fullfile('..','data','ds003702');           % [REDACTED local path, see git history]
+cfg.deriv_dir   = fullfile('..','derivatives','fpg');          % [REDACTED local path, see git history]
 % CONFIRMED: unlike the ReadMeDerivatives.txt description (which implied a
 % separate derivatives_ProcessedData/EEGDataTableStudy/sub-XX/... tree),
 % on this machine data_ica.mat actually lives directly under each subject's
 % own folder inside cfg.bids_dir: sub-XX\ProcessedData\data_ica.mat.
 % cfg.authors_deriv_file(subj) below builds that path per subject.
 cfg.authors_deriv_file = @(subj) fullfile(cfg.bids_dir, subj, 'ProcessedData', 'data_ica.mat');
-cfg.eeglab_dir  = 'C:\Users\Amirhossein\Documents\eeglab2023.0';   % CONFIRMED absolute path
+cfg.eeglab_dir  = fullfile('..','..','eeglab2023.0');           % [REDACTED local path, see git history]
 
 % ---------------- DATASET SUBSET (for a fast first pass) ----------------
 cfg.subset_n = [];   % [] = process all subjects for the final run
