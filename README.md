@@ -208,19 +208,12 @@ before `cfg = config()` existed (would error on a fresh clone).
   branch entailed. Do not treat it as a confirmed finding.
 - The cue × validity interaction in gamma connectivity remains genuinely
   inconclusive (BF01 in the 3.38–3.68 range, post-fix) — not a confirmed null.
-- After Holm-Bonferroni correction across the six-test primary EEG family, no
-  test survives, including the PLV effect (p_holm = 0.30). The paper's
-  interpretive claim rests on multi-metric convergence, not a single
-  corrected threshold — a deliberate departure from single-p-value reporting
-  that should stay explicit wherever this pilot is cited (e.g. the MSCA
-  proposal).
+- At the ROI level, the validity effect on high-gamma PLV survives Holm–Bonferroni
+  correction across the 12 ROI contrasts it was selected from (p_holm = 0.0036).
+  At the single-pair level no pair survives (strongest FCz–Pz, p_fwer = 0.0512,
+  p_holm = 0.3072). The zero-lag interpretation rests on the robust measures,
+  CSD re-referencing and the phase-difference distribution, not on any corrected p-value.
 
-## Data and code availability
-
-The preprint's current Data and Code Availability section has a placeholder:
-*"[Repository link and DOI to be added upon deposition]"*. Once this repo is
-public, update that sentence with the actual GitHub URL, and add the Zenodo
-DOI once archived (matching the workflow already used for Pilot 1).
 
 ## Config
 
