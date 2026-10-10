@@ -77,7 +77,7 @@ This pilot is the companion analysis to
   s10_bayes_tost_gamma         % BF10/BF01 (JZS) + TOST, all 3 contrasts x 2 metrics x 2 sub-bands
   s13_imaginary_coherence      % dissociation test: ImC vs PLV/dwPLI (+ phase_diff_diagnostic_F2P4)
   s14_sensitivity_sub48        % with/without sub-48 -- see "Known reproducibility gaps" below
-  s15_sensitivity_rtstat       % RT_stat filter reactivated for sub-01..04
+  s15_sensitivity_rtstat       % RT_stat filter disabled for sub-01..04 (uniform trial inclusion)
   s16_multiple_comparisons_audit  % Holm-Bonferroni, Family 1 (behavioral) + Family 2 (cluster)
   s17_visual_confound_phase4   % occipital ERP, avatar vs stick, 70-340ms
   s18_csd_sensitivity          % CSD re-reference, primary PLV/dwPLI/ImC contrast
@@ -149,7 +149,8 @@ numbers here reflect the corrected pipeline, rerun end to end.)
 | `conn_cluster_results_{cue_main,valid_main,interaction}_by_metric.csv` | `s06` | full pairwise max-stat space; strongest single pair is now FCz-Pz (p_fwer=0.0512), not F2-P4 (p_fwer=0.0846) |
 | `multcomp_audit_family1_behavior.csv` | `s16` | Table 1 — unchanged by the s01 fix (behavioral data, as expected) |
 | `multcomp_audit_family2_cluster.csv` | `s16` | strongest pair FCz-Pz, p_fwer=0.0512, p_holm=0.3072 |
-| `csd_sensitivity_summary.csv` + `_persubject.csv` | `s18` | ROI-avg: BF10 86.76→BF01=5.23; F2-P4 t: -3.52→+1.39 (BF10=2.58, not equivalent); ROI-avg ImC under CSD: BF01=2.79 (inconclusive, not a positive signal) |
+| multcomp_audit_family3_roi.csv | s16 | ROI-avg PLV validity (gamma_high): p=0.0003, p_holm=0.0036 across 12 ROI contrasts — survives |
+| `csd_sensitivity_summary.csv` + `_persubject.csv` | `s18` | ROI-avg: BF10 86.76→BF01=5.23; F2-P4 t: -3.52→+1.39 (BF01=2.58, not equivalent); ROI-avg ImC under CSD: BF10=2.79 (inconclusive, not a positive signal) |
 | `csd_imc_perpair_valid_main_gamma_high.csv` | `s19` | per-pair breakdown underlying the CSD ImC cluster |
 | `csd_imc_clustermass_valid_main_gamma_high.csv` | `s19` | **7-pair** cluster (not 9), mass=17.12, p_cluster=0.023 |
 | `csd_imc_cluster_seedstability.csv` | `s20` (patched — see below) | stable across 10 seed/nperm combos, p_cluster 0.023–0.027 |
@@ -157,7 +158,7 @@ numbers here reflect the corrected pipeline, rerun end to end.)
 | `sensitivity_acc_loc_FULL__all_47_.csv` / `_WITHOUT_sub-48.csv` | `s14` (Part C) | behavioral robustness to sub-48 exclusion — unchanged by s01 fix |
 | `sensitivity_gammahigh_bayes.csv` | `s14` (Parts A/B, patched) | BF10 with/without sub-48 |
 | `sensitivity_f2p4_cluster.csv` | `s14` (patched) | matches `s06c`'s 29-pair cluster exactly (78.51, p=0.0002) — cross-script consistency check passed |
-| `sensitivity_rtstat_gammahigh.csv` | `s15` (patched) | BF10 with/without RT_stat reactivation |
+| `sensitivity_rtstat_gammahigh.csv` | `s15` (patched) | BF10 with the RT_stat filter as run vs. disabled for sub-01..04 |
 | `visual_confound_occipital_rms.csv` + `visual_confound_timecourse.mat` | `s17` | descriptive RMS + time-resolved t-course; window-mean sanity check t(46)=7.82, p≈5e-10, consistent with the reported p<0.001 cluster stat |
 | `conn_results_rtstat_sensitivity.mat` | `s15` | raw recomputed connectivity for sub-01..04 |
 
