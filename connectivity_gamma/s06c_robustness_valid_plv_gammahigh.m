@@ -78,15 +78,25 @@ bad = any(isnan(D),2); D = D(~bad,:); n = size(D,1);
 fprintf('Subjects used: %d\n\n', n);
 
 tobs = mean(D) ./ (std(D)./sqrt(n));
-target_idx = find(strcmp(labs, 'F2-P4'));
-fprintf('Observed t for F2-P4: %.4f\n\n', tobs(target_idx));
+% v2 (2026-10): after the s01 Muscle-IC fix the strongest pair is FCz-Pz,
+% not F2-P4. Check both: the strongest pair (max |t|) and F2-P4, the pair
+% used for the phase-difference, ImC and CSD diagnostics. NOTE: the max
+% null here spans the 64 gamma_high pairs only, so p_fwer is not identical
+% to s06's p_fwer (whose max-stat space differs); report it as such.
+[~, strongest_idx] = max(abs(tobs));
+target_idx_list = unique([strongest_idx, find(strcmp(labs, 'F2-P4'))], 'stable');
+for k = target_idx_list
+    fprintf('Observed t for %s: %.4f\n', labs{k}, tobs(k));
+end
+fprintf('\n');
 
 % ======================= (A) seed stability, max-stat =======================
 fprintf('--- (A) Max-stat seed stability ---\n');
 seeds_to_try = [1 2 3 7 42];
 n_perm_variants = [cfg.stat.n_perm, 10000];
 
-fprintf('%8s %8s %10s %8s %8s\n','seed','n_perm','p_fwer(F2-P4)','sig','max|t|_thr');
+fprintf('%8s %8s %8s %10s %8s %8s\n','pair','seed','n_perm','p_fwer','sig','max|t|_thr');
+seed_rows = {};
 for np = n_perm_variants
     for sd = seeds_to_try
         rng(sd);
@@ -97,15 +107,22 @@ for np = n_perm_variants
             t = mean(Dp) ./ (std(Dp)./sqrt(n));
             maxnull(p) = max(abs(t));
         end
-        p_fwer_target = mean(maxnull >= abs(tobs(target_idx)));
         thr95 = prctile(maxnull,95);
-        fprintf('%8d %8d %10.4f %8d %8.3f\n', sd, np, p_fwer_target, p_fwer_target<0.05, thr95);
+        for k = target_idx_list
+            p_fwer_target = mean(maxnull >= abs(tobs(k)));
+            fprintf('%8s %8d %8d %10.4f %8d %8.3f\n', labs{k}, sd, np, p_fwer_target, p_fwer_target<0.05, thr95);
+            seed_rows(end+1,:) = {labs{k}, tobs(k), sd, np, p_fwer_target, thr95}; %#ok<SAGROW>
+        end
     end
 end
-fprintf(['\nInterpretation: if p_fwer(F2-P4) stays < 0.05 across seeds and\n' ...
+Tseed = cell2table(seed_rows, 'VariableNames', {'pair','t','seed','n_perm','p_fwer','maxnull_thr95'});
+writetable(Tseed, fullfile(cfg.deriv_dir, sprintf('maxstat_seed_stability_%s_%s_%s.csv', cname, mt, bn)));
+fprintf('\nSaved maxstat_seed_stability_%s_%s_%s.csv\n', cname, mt, bn);
+
+fprintf(['\nInterpretation: if p_fwer stays on the same side of 0.05 across seeds and\n' ...
     'grows more stable (converges) at n_perm=10000, the max-stat result is\n' ...
     'not a fluke of rng(1). If it flips above 0.05 for other seeds, the\n' ...
-    'original p=0.0498 should be reported as non-robust / borderline.\n\n']);
+    'borderline p_fwer should be reported as non-robust / borderline.\n\n']);
 
 % ======================= (B) cluster-mass permutation test =======================
 fprintf('--- (B) Cluster-mass permutation test ---\n');

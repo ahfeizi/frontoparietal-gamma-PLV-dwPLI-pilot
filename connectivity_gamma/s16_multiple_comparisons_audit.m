@@ -13,19 +13,29 @@
 %   strongest pair), since all 6 are reported together in the same
 %   manuscript. Source: conn_cluster_results_<contrast>_by_metric.csv.
 %
+%   FAMILY 3 (S10 ROI-average table): 3 contrasts x 2 metrics x 2 gamma
+%   sub-bands = 12 tests, Holm on the parametric p_freq of each ROI-average
+%   paired t-test. Added 2026-10 (v2): the valid_main/PLV/gamma_high row is
+%   the paper's headline ROI-level effect and was selected from this
+%   12-row table (see S10 note below), so its frequentist p-value is
+%   corrected across all 12 rows, not only the 6 gamma_high rows.
+%   Source: bayes_tost_gamma.csv.
+%
 % EXCLUDED FROM FORMAL CORRECTION (by design, not oversight):
 %   - S04 (24-test exploratory scan): superseded by S06/S10, not reported
 %     as an independent statistical claim -- see manuscript note below.
-%   - S10 (12-row Bayes/TOST table): Bayesian framework, no p-value alpha
-%     to inflate; instead requires EXPLICIT DISCLOSURE that d_val/PLV/
-%     gamma_high was singled out from this table for deeper follow-up
-%     (S06c cluster-mass, S13 imaginary coherence) -- selection-after-
-%     looking, not a pre-registered target.
+%   - S10 Bayes factors and TOST (12-row table): Bayesian framework, no
+%     alpha to inflate. Its frequentist p-values ARE now corrected as
+%     FAMILY 3 above. Disclosure still required that d_val/PLV/gamma_high
+%     was singled out from this table for deeper follow-up (S06c
+%     cluster-mass, S13 imaginary coherence) -- selection-after-looking,
+%     not a pre-registered target.
 %   - S06c / S13 (F2-P4 follow-up): confirmatory tests of an
 %     already-identified target, not a new scan -- labeled "post-hoc" in
 %     the manuscript rather than corrected as a new family.
 %
 % Output: multcomp_audit_family1_behavior.csv, multcomp_audit_family2_cluster.csv,
+% multcomp_audit_family3_roi.csv,
 % plus manuscript-ready disclosure text printed to console.
 
 clear; clc;
@@ -87,17 +97,27 @@ writetable(Fam2, fullfile(cfg.deriv_dir, 'multcomp_audit_family2_cluster.csv'));
 disp(Fam2);
 fprintf('Saved multcomp_audit_family2_cluster.csv\n\n');
 
+% ======================= FAMILY 3: ROI-average table (12 tests) =======================
+fprintf('=== FAMILY 3: S10 ROI-average contrasts, Holm across 12 tests ===\n');
+T3 = readtable(fullfile(cfg.deriv_dir, 'bayes_tost_gamma.csv'));
+assert(height(T3) == 12, 'Expected 12 rows in bayes_tost_gamma.csv, found %d.', height(T3));
+Fam3 = T3(:, {'contrast','metric','band','t','p_freq'});
+Fam3 = local_holm(Fam3, 'p_freq');
+writetable(Fam3, fullfile(cfg.deriv_dir, 'multcomp_audit_family3_roi.csv'));
+disp(Fam3);
+fprintf('Saved multcomp_audit_family3_roi.csv\n\n');
+
 % ======================= manuscript-ready disclosure text =======================
 fprintf('=== Manuscript disclosure text (paste/adapt into Methods/Results) ===\n\n');
 fprintf(['"An initial unc' 'orrected scan across band x metric x contrast combinations (s04-\n' ...
   'style) was used only to guide which analyses to pursue in depth and is not reported\n' ...
-  'as an independent statistical claim. Two confirmatory families were subject to formal\n' ...
+  'as an independent statistical claim. Three confirmatory families were subject to formal\n' ...
   'multiple-comparisons correction (Holm-Bonferroni): (1) the 12 behavioral ANOVA effects\n' ...
   '(4 DVs x 3 within-subject effects, Phase 0), and (2) the 6 cluster-level connectivity\n' ...
   'tests (3 contrasts x 2 metrics), each already FWER-corrected internally across its own\n' ...
   '128 channel pairs via max-statistic permutation, with Holm applied across the 6\n' ...
-  'family-level results. The Bayesian gamma-band table (12 rows: 3 contrasts x 2 metrics x\n' ...
-  '2 subbands) does not require frequentist alpha correction, but we explicitly disclose\n' ...
+  'family-level results. (3) The 12 ROI-average contrasts (3 contrasts x 2 metrics x\n' ...
+  '2 gamma sub-bands) were Holm-corrected on their parametric p-values. We explicitly disclose\n' ...
   'that the valid_main/PLV/gamma_high row was identified as notable from this table and\n' ...
   'selected for deeper follow-up (cluster-mass permutation with a montage-derived channel\n' ...
   'adjacency structure, and an imaginary-coherency check for volume-conduction artifacts);\n' ...
