@@ -231,4 +231,26 @@ cfg.stat.tail   = 0;
 
 % ---------------- FIGURES ----------------
 cfg.fig.dpi = 300;
+
+% =====================================================================
+% ===== BATTERY ADDITIONS (battery/s21-s24) ===========================
+% Added in v1.2.0 for the convergent-validation battery. Nothing above
+% this block was changed. Placed before the closing 'end' because config.m
+% is a function. CSD uses the existing cfg.fieldtrip_dir (PATHS / alpha
+% section above) -- EDIT that line to your FieldTrip install; no new path
+% is defined here.
+cfg.battery.bands.gamma_low  = [30 45];
+cfg.battery.bands.gamma_high = [55 80];
+
+% Morlet centre frequencies per band (per-bin connectivity averaged
+% within band, as the frontotemporal pilot's s16_wavelet_beta.m)
+cfg.battery.wavelet_freqs.gamma_low  = 31:2:45;
+cfg.battery.wavelet_freqs.gamma_high = 55:2:79;
+cfg.battery.n_cycles = 5;
+
+% Folder the check scripts (s22, s24) read from. Default: this repository's
+% results/ folder (the released copies). Set to cfg.deriv_dir to check a
+% fresh s21/s23 run instead.
+cfg.battery.check_dir = fullfile(fileparts(mfilename('fullpath')), 'results');
+% ===== END BATTERY ADDITIONS =========================================
 end

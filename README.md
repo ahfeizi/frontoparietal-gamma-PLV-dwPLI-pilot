@@ -222,3 +222,47 @@ before `cfg = config()` existed (would error on a fresh clone).
 running — none of these should point to a personal machine path once committed.
 See `CHANGELOG_alpha_timing_v3v4.md` for the full investigation behind the
 `cfg.alpha.lock_event = 'cue'` decision (§ referenced inline in `config.m`).
+
+## v1.2.0 - unified validation battery
+
+Crosses measure (PLV, dwPLI, ImC) x decomposition (Hilbert, Morlet wavelet) x
+reference (average, CSD) for gamma_low and gamma_high, all four cue x validity
+cells and all 64 frontal x parietal pairs. Scripts are in `/battery/` (setup,
+toolboxes and resume behaviour: `battery/RUN_battery.md`); Python dependencies
+are pinned in `python/requirements.txt` (Python 3.12). The check scripts read
+from `cfg.battery.check_dir`, which defaults to `results/`.
+
+### Run order
+
+```
+/battery/
+  s21_battery                 % per-subject battery values (no stats)           -> battery_persubject.csv, battery_phasediff.csv, battery_phasediff_bins.csv
+  s22_battery_check           % regression check of s21 vs s03/s13/s18 output    -> PASS/FAIL printout
+  s23_imc_diagnostic          % EXPLORATORY: ImC/dwPLI joint vs per-sample aggregation, gamma_high -> imc_diag_persubject.csv, imc_diag_power.csv
+  s24_imc_diagnostic_check    % regression check of s23 vs battery_persubject.csv -> PASS/FAIL printout
+/python/
+  unified_table.py            % contrasts + phase-difference summary             -> unified_contrasts.csv, phase_diff_summary.csv, anchor_checks.txt
+  lag_check.py                % exploratory: phase lag under CSD vs average reference
+```
+
+Example: `python python/unified_table.py --p2 <cfg.deriv_dir> --out <dir>` and
+`python python/lag_check.py --p2 <cfg.deriv_dir>` (`results/` also works as the
+input folder for both). The ds003702 rows of the unified tables are in
+`results/unified_contrasts_ds003702.csv` and
+`results/phase_diff_summary_ds003702.csv`.
+
+### Corrections and additions in v1.2.0
+
+- Battery: PLV/dwPLI/ImC x Hilbert/wavelet x average/CSD; reproduces published
+  values exactly (s22).
+- ImC under CSD (gamma_high, validity): the effect is in signed ImC only; |ImC|
+  is null (BF01 6.2-6.3) and it is unchanged by aggregation (s23/s24); see
+  imc_diag_persubject.csv.
+- F2-P4 phase-difference count: 175/188 (reproduced by s22 T4).
+- conn_results.mat added to results/ (per-subject PLV/dwPLI underlying the
+  published contrasts).
+- results/conn_results.mat: the four absolute paths stored in its cfg
+  (data, derivatives, EEGLAB and FieldTrip directories) were replaced by the
+  relative values in config.m; all data fields are unchanged (isequal-verified).
+  The copies of the data and derivatives paths captured by the function handle
+  cfg.authors_deriv_file were replaced the same way; its text is unchanged.
