@@ -223,6 +223,13 @@ running — none of these should point to a personal machine path once committed
 See `CHANGELOG_alpha_timing_v3v4.md` for the full investigation behind the
 `cfg.alpha.lock_event = 'cue'` decision (§ referenced inline in `config.m`).
 
+## v1.2.1 - estimator cross-check
+
+Adds battery/s25_fieldtrip_crosscheck.m: independent FieldTrip recomputation
+of PLV, dwPLI and ImC for sub-01 (high gamma, Hilbert, average reference,
+4 cells x 64 pairs); max |difference| 1.7e-16; PASS. No analysis code or
+result file changed.
+
 ## v1.2.0 - unified validation battery
 
 Crosses measure (PLV, dwPLI, ImC) x decomposition (Hilbert, Morlet wavelet) x
